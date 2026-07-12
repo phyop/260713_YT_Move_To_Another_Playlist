@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -16,7 +17,7 @@ def run(*args: str) -> str:
 
 
 def watch_later_entries(browser: str) -> list[dict]:
-    raw = run("yt-dlp", "--cookies-from-browser", browser, "--flat-playlist",
+    raw = run(sys.executable, "-m", "yt_dlp", "--cookies-from-browser", browser, "--flat-playlist",
               "--dump-single-json", "https://www.youtube.com/playlist?list=WL")
     return json.loads(raw).get("entries", [])
 
@@ -24,7 +25,7 @@ def watch_later_entries(browser: str) -> list[dict]:
 def language(video_id: str, browser: str, model: WhisperModel) -> tuple[str, float]:
     with tempfile.TemporaryDirectory() as td:
         target = str(Path(td) / "audio.%(ext)s")
-        subprocess.run(["yt-dlp", "--cookies-from-browser", browser, "-x",
+        subprocess.run([sys.executable, "-m", "yt_dlp", "--cookies-from-browser", browser, "-x",
                         "--audio-format", "mp3", "--download-sections", "*0-90",
                         "-o", target, f"https://youtu.be/{video_id}"], check=True)
         audio = next(Path(td).glob("audio.*"))
