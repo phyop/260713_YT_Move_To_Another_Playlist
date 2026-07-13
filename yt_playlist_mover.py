@@ -39,7 +39,7 @@ def click_unique(page: Page, role: str, names: tuple[str, ...]) -> None:
         if loc.count() == 1:
             loc.click()
             return
-    raise RuntimeError(f"找不到唯一控制項: {names}")
+    raise RuntimeError(f"Could not find exactly one matching control: {names}")
 
 
 def move_in_ui(page: Page, video_id: str, playlist: str) -> None:
@@ -49,7 +49,7 @@ def move_in_ui(page: Page, video_id: str, playlist: str) -> None:
     dialog.wait_for()
     target = dialog.get_by_text(playlist, exact=True)
     if target.count() != 1:
-        raise RuntimeError(f"找不到播放清單：{playlist}")
+        raise RuntimeError(f"Could not find playlist: {playlist}")
     target.click()
     wl = dialog.get_by_text("稍後觀看", exact=True).or_(dialog.get_by_text("Watch later", exact=True))
     if wl.count() == 1:
@@ -59,12 +59,12 @@ def move_in_ui(page: Page, video_id: str, playlist: str) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--playlist", default="大便")
+    ap.add_argument("--playlist", default="English")
     ap.add_argument("--browser", default="chrome")
-    ap.add_argument("--profile-dir", help="Chrome User Data 資料夾；正式移動時必填")
+    ap.add_argument("--profile-dir", help="Chrome User Data directory; required with --apply")
     ap.add_argument("--model", default="small")
     ap.add_argument("--threshold", type=float, default=.80)
-    ap.add_argument("--apply", action="store_true", help="實際移動；預設僅預覽")
+    ap.add_argument("--apply", action="store_true", help="Move videos; default is preview only")
     args = ap.parse_args()
 
     entries = watch_later_entries(args.browser)
@@ -79,10 +79,10 @@ def main() -> None:
             english.append(item["id"])
 
     if not args.apply:
-        print(f"預覽完成：{len(english)} 部英文影片；加上 --apply 才會移動。")
+        print(f"Preview complete: {len(english)} English videos. Add --apply to move them.")
         return
     if not args.profile_dir:
-        ap.error("--apply 需要 --profile-dir")
+        ap.error("--apply requires --profile-dir")
     with sync_playwright() as pw:
         context = pw.chromium.launch_persistent_context(args.profile_dir, channel="chrome", headless=False)
         page = context.pages[0] if context.pages else context.new_page()

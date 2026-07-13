@@ -1,10 +1,43 @@
-# YouTube 英文影片分類器
+# YouTube Spoken-English Playlist Organizer
 
-以 Python 掃描 YouTube「稍後觀看」，擷取每部影片前 90 秒音訊，使用 Whisper 判斷口語語言，並把高可信度英文影片移到指定播放清單（預設「大便」）。
+A Python tool that scans YouTube Watch Later, analyzes the first 90 seconds of each video with Whisper, and moves high-confidence English-spoken videos to a target playlist.
 
-## 安裝
+## Features
 
-需要 Python 3.11+、FFmpeg 與已登入 YouTube 的 Chrome。
+- Reads Watch Later with `yt-dlp` and the user's existing browser session.
+- Detects spoken language locally with `faster-whisper`.
+- Uses a configurable confidence threshold.
+- Defaults to preview mode and requires `--apply` for changes.
+- Adds a video to the destination before removing it from Watch Later.
+- Deletes temporary audio automatically.
+- Supports Chinese and English YouTube UI labels.
+
+## Tech stack
+
+- Python 3.11+
+- yt-dlp
+- faster-whisper
+- Playwright
+- FFmpeg
+- Chrome on Windows
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Watch Later] --> B[yt-dlp metadata]
+    B --> C[90-second audio sample]
+    C --> D[Whisper language detection]
+    D --> E{English above threshold?}
+    E -- No --> F[Leave unchanged]
+    E -- Yes, preview --> G[Report candidate]
+    E -- Yes, apply --> H[Add to target playlist]
+    H --> I[Remove from Watch Later]
+```
+
+## Installation
+
+Install Python 3.11+, FFmpeg, and Chrome. Then:
 
 ```powershell
 python -m venv .venv
@@ -13,20 +46,49 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-先關閉 Chrome，然後預覽（不修改播放清單）：
+## Usage
+
+Close Chrome before allowing `yt-dlp` to read its cookies. Run a preview first:
 
 ```powershell
 python yt_playlist_mover.py
 ```
 
-確認輸出後正式移動：
+Apply the reviewed moves:
 
 ```powershell
-python yt_playlist_mover.py --apply --profile-dir "$env:LOCALAPPDATA\Google\Chrome\User Data"
+python yt_playlist_mover.py --apply `
+  --playlist "English" `
+  --profile-dir "$env:LOCALAPPDATA\Google\Chrome\User Data"
 ```
 
-可用 `--threshold 0.9` 提高英文判定門檻。工具只有在加入目標清單的操作成功後才會取消「稍後觀看」。YouTube 介面若改版，定位文字可能需要調整。
+Increase the language-confidence threshold when precision matters more than recall:
 
-## 隱私
+```powershell
+python yt_playlist_mover.py --threshold 0.9
+```
 
-Cookie、音訊與登入資料不會加入 Git；音訊只存在系統暫存資料夾，辨識完成即刪除。
+## Safety model
+
+Preview is the default. During an applied run, the tool adds the video to the destination playlist before removing it from Watch Later. If the add operation fails, the source entry remains untouched.
+
+Browser cookies, login data, and downloaded audio must never be committed. Audio samples live only in a temporary directory and are deleted after recognition.
+
+## Limitations
+
+- YouTube UI changes may require locator updates.
+- Ninety seconds may not represent multilingual or music-heavy videos accurately.
+- Browser profile locking can prevent access while Chrome is open.
+- The script currently resumes by rescanning rather than using a persistent checkpoint database.
+
+## Future improvements
+
+- JSON/SQLite checkpoints and resumable batches
+- Unit tests for classification and UI transaction logic
+- configurable sampling windows
+- richer dry-run reports
+- YouTube Data API support where official endpoints fit the workflow
+
+## Medium
+
+The English publication draft is available at [`docs/medium-article.md`](docs/medium-article.md).
