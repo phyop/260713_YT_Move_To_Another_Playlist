@@ -55,7 +55,7 @@ This is a small example of a broader distributed-systems lesson. When an externa
 
 ## Making browser automation less brittle
 
-YouTube may display controls in Chinese or English. The helper searches for exact accessible names such as `儲存` and `Save`, and requires exactly one matching control before clicking. It refuses to guess when the page is ambiguous.
+YouTube may display controls in localized languages. The helper searches for an explicit allowlist of exact accessible names and requires exactly one matching control before clicking. It refuses to guess when the page is ambiguous.
 
 That strictness is intentional. A browser agent that silently clicks the first approximate match may appear robust during demos while being dangerous in production. Exact matching turns a UI change into a visible failure instead of an invisible wrong action.
 
