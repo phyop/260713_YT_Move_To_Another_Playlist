@@ -15,7 +15,7 @@ I split the workflow into four responsibilities:
 
 `yt-dlp` handles the first two responsibilities. Its flat-playlist mode returns video identifiers and titles quickly, using the existing Chrome session instead of asking the script to store a password. For classification, the tool downloads only the first 90 seconds as temporary audio.
 
-`faster-whisper` handles language detection. Whisper returns both a language code and a probability, so the decision is not merely “English or not.” The command exposes a threshold. A lower threshold finds more candidates; a higher threshold reduces false positives.
+`faster-whisper` handles language detection. Whisper returns both a language code and a probability, so the decision is not merely "English or not." The command exposes a threshold. A lower threshold finds more candidates; a higher threshold reduces false positives.
 
 ```powershell
 python yt_playlist_mover.py --threshold 0.9
@@ -44,7 +44,7 @@ Preview is not an optional convenience. It is the boundary between a machine rec
 
 ## The transaction problem hidden in a UI click
 
-There is no single “move this Watch Later item” button in the workflow. Moving is a two-step transaction:
+There is no single "move this Watch Later item" button in the workflow. Moving is a two-step transaction:
 
 1. add the video to the destination playlist;
 2. remove it from Watch Later.
@@ -65,7 +65,7 @@ The tradeoff is maintenance. YouTube can change its markup or labels, and UI aut
 
 Audio classification happens locally. Each sample is stored in a temporary directory, passed to Whisper, and removed when the context closes. Cookies remain in the browser profile and are read by the local tools; they are never copied into Git.
 
-This separation matters for an AI workflow. “Uses AI” should not automatically mean “uploads personal media history to another service.” Local inference is slower than a hosted API on some machines, but it provides a clear privacy boundary and predictable data retention.
+This separation matters for an AI workflow. "Uses AI" should not automatically mean "uploads personal media history to another service." Local inference is slower than a hosted API on some machines, but it provides a clear privacy boundary and predictable data retention.
 
 ## What I learned
 
@@ -73,7 +73,7 @@ The first lesson was to classify the signal that actually answers the question. 
 
 The second lesson was to design destructive automation around uncertainty. Confidence thresholds, preview mode, and explicit apply flags let the user control the false-positive risk.
 
-The third lesson was that a “move” operation is often a workflow rather than one API call. Adding before removing protects the source when the second system interaction fails.
+The third lesson was that a "move" operation is often a workflow rather than one API call. Adding before removing protects the source when the second system interaction fails.
 
 Finally, AI-assisted engineering still needs conventional safeguards: secrets stay local, temporary files have defined lifetimes, UI locators fail closed, and cloud mutations require explicit authorization.
 

@@ -91,4 +91,8 @@ Browser cookies, login data, and downloaded audio must never be committed. Audio
 
 ## Medium
 
-The English publication draft is available at [`docs/medium-article.md`](docs/medium-article.md).
+The English article is published on Medium:
+
+- [How I Used Whisper to Organize YouTube Watch Later by Spoken Language](https://medium.com/@seek1andfind2/how-i-used-whisper-to-organize-youtube-watch-later-by-spoken-language-8c0e7d024215)
+
+The source draft is available at [`docs/medium-article.md`](docs/medium-article.md).
