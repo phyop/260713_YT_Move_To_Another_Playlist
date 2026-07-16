@@ -96,13 +96,3 @@ The same architecture can generalize beyond English: classify lectures, podcasts
 ## Conclusion
 
 The useful part of this project was not simply connecting Whisper to YouTube. It was turning an uncertain model prediction into a cautious, reviewable, failure-aware cloud workflow.
-
-## SEO
-
-- **SEO title:** Organize YouTube Watch Later by Spoken Language with Python and Whisper
-- **Meta description:** Build a privacy-conscious Python workflow that samples YouTube audio, detects spoken English with faster-whisper, previews decisions, and safely moves videos with Playwright.
-- **URL slug:** `organize-youtube-watch-later-spoken-language-whisper-python`
-
-## Tags
-
-Python, YouTube, Whisper, Playwright, AI Automation

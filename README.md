@@ -2,6 +2,19 @@
 
 A Python tool that scans YouTube Watch Later, analyzes the first 90 seconds of each video with Whisper, and moves high-confidence English-spoken videos to a target playlist.
 
+## Project overview
+
+YouTube playlist organization looks simple until the signal becomes ambiguous. Titles, descriptions, and channels do not reliably identify spoken language, so this project treats language classification as an evidence-gathering step instead of a metadata guess.
+
+The workflow samples short audio, estimates spoken language locally, reports confidence, and moves only reviewed high-confidence candidates. The design favors preview, reversibility, and human control over automatic cleanup.
+
+## What this demonstrates
+
+- Local AI inference for privacy-conscious media organization.
+- A transaction-like browser workflow: add to the destination before removing from the source.
+- Human-in-the-loop automation for uncertain classifier output.
+- Clear operational boundaries around cookies, temporary audio, and playlist changes.
+
 ## Features
 
 - Reads Watch Later with `yt-dlp` and the user's existing browser session.
@@ -74,6 +87,10 @@ Preview is the default. During an applied run, the tool adds the video to the de
 
 Browser cookies, login data, and downloaded audio must never be committed. Audio samples live only in a temporary directory and are deleted after recognition.
 
+## Validation
+
+The current implementation is designed around observable dry-run output and conservative browser actions. A reviewer can validate behavior by running the preview mode first, inspecting confidence scores, and applying a small approved batch only after the candidate list looks correct.
+
 ## Limitations
 
 - YouTube UI changes may require locator updates.
@@ -85,8 +102,8 @@ Browser cookies, login data, and downloaded audio must never be committed. Audio
 
 - JSON/SQLite checkpoints and resumable batches
 - Unit tests for classification and UI transaction logic
-- configurable sampling windows
-- richer dry-run reports
+- Configurable sampling windows
+- Richer dry-run reports
 - YouTube Data API support where official endpoints fit the workflow
 
 ## Medium
